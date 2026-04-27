@@ -1,0 +1,50 @@
+{{ block title }}
+    Specific Instructions
+{{ endblock }}
+
+{{ block content }}
+    <div class="card bg-light mb-4 shadow-sm">
+        <div class="card-body" style="font-family: 'Times New Roman', serif; font-size: 11pt;">
+
+            <h5 class="border-bottom pb-2">The Incumbent's Decision</h5>
+            <p>The computer will randomly select one group member to be the Incumbent. The Incumbent is given the <strong>Group Budget of 100 tokens</strong>. The Incumbent must divide this budget into <strong>three uses</strong>:</p>
+            <ul>
+                <li><strong>Group Project (P):</strong> An investment that benefits all group members.</li>
+                <li><strong>Incumbent’s Private Account (R):</strong> A transfer that increases only the Incumbent’s personal earnings.</li>
+                <li><strong>Private Transfer (H):</strong> A transfer sent to <strong>one other group member</strong> of the Incumbent’s choice.</li>
+            </ul>
+            <p>The allocation must satisfy: P + R + H = 100.</p>
+
+            <p>All group members will see a public signal (Low, Medium, or High) based on the Incumbent’s chosen P, but with some random variation added. You will not see the values of P, R, H, or who received H.</p>
+
+            <h5 class="border-bottom pb-2 mt-4">Election for Next Round</h5>
+            <ul>
+                <li>All players who are not the current Incumbent may choose to become a Candidate for the next round.</li>
+                <li>To become a Candidate, you must spend <strong>Campaign Effort (e)</strong>, measured in tokens from your own account. Effort is spent regardless of whether you win.</li>
+                <li>All 5 group members then vote for who will be the Incumbent next round. The winner takes office immediately in the next round and receives an <strong>Office Bonus of {{ C.OFFICE_BONUS }} tokens</strong>.</li>
+            </ul>
+
+            <h5 class="border-bottom pb-2 mt-4">Your Earnings Each Round</h5>
+            <p>Your tokens for a round are calculated as follows:</p>
+            <ul class="list-unstyled">
+                <li>&nbsp;&nbsp;&nbsp;Your initial endowment (120 tokens).</li>
+                <li><strong>- Minus:</strong> The budget contribution (20 tokens).</li>
+                <li><strong>+ Plus:</strong> Private rents (R) if you are the Incumbent.</li>
+                <li><strong>+ Plus:</strong> Office Bonus ({{ C.OFFICE_BONUS }} tokens) if you are the Incumbent.</li>
+                <li><strong>+ Plus:</strong> Private transfer (H) if you receive one.</li>
+                <li><strong>+ Plus:</strong> Public-good payoff based on the signal (15, 25, or 30 tokens).</li>
+                <li><strong>- Minus:</strong> Campaign effort (e) if you chose to run.</li>
+            </ul>
+
+            <p>Your final payoff corresponds to a <strong>random round</strong> (converted to dollars at 10 tokens = $1), plus your $5 participation fee.</p>
+
+            <div class="alert alert-warning mt-3">
+                <strong>Understanding Check:</strong> Before we begin, you will answer a few questions on your screen to confirm you understand these rules.
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        {{ next_button }}
+    </div>
+{{ endblock }}

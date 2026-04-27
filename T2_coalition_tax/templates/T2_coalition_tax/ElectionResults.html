@@ -1,0 +1,65 @@
+{{ block title }} Round Results {{ endblock }}
+
+{{ block content }}
+    <div class="card mb-4 shadow-sm border-primary">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Phase 1: Allocation Summary</h5>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tr>
+                    <th>Public Signal</th>
+                    <td>{{ group.public_signal }}</td>
+                </tr>
+                <tr>
+                    <th>Your Tokens from Public Goods</th>
+                    <td>{{ group.current_pg_payoff }}</td>
+                </tr>
+                <tr>
+                    <th>Transfers Received</th>
+                    <td>{{ player.transfer_received }}</td>
+                </tr>
+                {% if player.is_incumbent %}
+                <tr>
+                    <th>Private Rents (R)</th>
+                    <td>{{ group.private_rents }}</td>
+                </tr>
+                {% endif %}
+                <tr class="table-info">
+                    <th><strong>Interim Payoff (pre-election)</strong></th>
+                    <td><strong>{{ player.interim_payoff }} tokens</strong></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm border-success">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Phase 2: Election Outcome</h5>
+        </div>
+        <div class="card-body">
+            <p class="lead text-center">
+                The winner of the election is <strong>{{ winner_label }}</strong>
+                with <strong>{{ winner_tickets }}</strong> tickets.
+            </p>
+
+            {% if won_election %}
+                <div class="alert alert-success text-center">
+                    <strong>Congratulations!</strong> You are the incumbent for the next round.
+                </div>
+            {% else %}
+                <p class="text-center">{{ winner_label }} will be the Incumbent in the next round.</p>
+            {% endif %}
+
+            <hr>
+            <div class="d-flex justify-content-between align-items-center px-4">
+                <h4 class="mb-0">Your Final Payoff for this Round:</h4>
+                <h2 class="text-primary">{{ player.payoff }} tokens</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary btn-lg">Start Next Round</button>
+    </div>
+{{ endblock }}

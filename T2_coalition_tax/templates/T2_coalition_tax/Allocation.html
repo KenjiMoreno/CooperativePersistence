@@ -1,0 +1,69 @@
+{{ block title }} Round Allocation {{ endblock }}
+
+{{ block content }}
+    <div class="alert alert-info">
+        <strong>You were chosen as Incumbent.</strong> Allocate the 100-token budget.
+        Unallocated tokens become your <strong>Private Rent</strong>.
+    </div>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="border-bottom pb-2 text-primary">1. Investment in Public Good</h5>
+            {{ formfield 'public_investment' label="Tokens for Group Project (P)" }}
+
+            <h5 class="border-bottom pb-2 mt-4 text-primary">2. Private Transfers</h5>
+
+            {# Loop through the list we created in vars_for_template #}
+            {% for item in transfer_fields %}
+                <div class="mb-3">
+                    <label class="form-label font-weight-bold">{{ item.label }}</label>
+                    {# Use the formfield tag with the dynamic name #}
+                    {{ formfield item.field_name label="" }}
+                </div>
+            {% endfor %}
+
+            <h5 class="border-bottom pb-2 mt-4 text-success">3. Private Rent (Auto-calculated)</h5>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Your Rents (R):</span>
+                <input type="text" id="rent_display" class="form-control" value="100" readonly style="background-color: #f8f9fa;">
+                <span class="input-group-text">tokens</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary btn-lg" id="submit_btn">Confirm Allocation</button>
+    </div>
+
+    <script>
+        let inputs = document.querySelectorAll('input[type="number"]');
+        let rentDisplay = document.getElementById('rent_display');
+        let submitBtn = document.getElementById('submit_btn');
+
+        function calculateRent() {
+            let totalAllocated = 0;
+            inputs.forEach(input => {
+                let val = parseInt(input.value) || 0;
+                totalAllocated += val;
+            });
+            let rent = 100 - totalAllocated;
+            rentDisplay.value = rent;
+
+            if (rent < 0) {
+                rentDisplay.style.color = 'red';
+                submitBtn.disabled = true;
+            } else {
+                rentDisplay.style.color = 'black';
+                submitBtn.disabled = false;
+            }
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', calculateRent);
+            input.addEventListener('keypress', function(e) {
+                if (['.', 'e', '-', '+'].includes(e.key)) e.preventDefault();
+            });
+        });
+        calculateRent();
+    </script>
+{{ endblock }}
