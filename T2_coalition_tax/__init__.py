@@ -20,7 +20,7 @@ class C(BaseConstants):
     SIGNAL_THRESHOLD_HIGH = 70
     NOISE_MEAN = 0
     NOISE_SD = 10
-    VOTE_WEIGHT = 10  # This now dynamically updates the HTML text
+    VOTE_WEIGHT = 10
     PAYOFF_LOW = 15
     PAYOFF_MED = 25
     PAYOFF_HIGH = 30
@@ -36,15 +36,18 @@ def creating_session(subsession):
             players = group.get_players()
             partners = random.sample(players, 2)
             for p in players:
-                is_p_connected = (p in partners)
-                # Ensure connection status is saved for all 10 rounds
-                for p_all in p.in_all_rounds():
-                    p_all.is_connected = is_p_connected
+                p.is_connected = (p in partners)
 
             initial_incumbent = random.choice(players)
-            for p_in_all in initial_incumbent.in_all_rounds():
-                if p_in_all.round_number == 1:
-                    p_in_all.is_incumbent = True
+            initial_incumbent.is_incumbent = True
+    else:
+        # Copy is_connected from round 1 for every player.
+        # This is necessary because oTree re-initializes player fields
+        # with their initial= defaults when creating each new subsession,
+        # which overwrites any values set during round 1's creating_session.
+        for group in subsession.get_groups():
+            for p in group.get_players():
+                p.is_connected = p.in_round(1).is_connected
 
 
 class Group(BaseGroup):
@@ -133,9 +136,8 @@ class Allocation(Page):
         for i in range(1, 6):
             if i == player.id_in_group: continue
             target = group.get_player_by_id(i)
-            # persistent partnership label check
             label_text = "Transfer to Your Partner" if (
-                        player.is_connected and target.is_connected) else f"Transfer to Player {i}"
+                player.is_connected and target.is_connected) else f"Transfer to Player {i}"
             transfers.append({'field_name': f'h_to_p{i}', 'label': label_text})
         return {'transfer_fields': transfers}
 
@@ -179,7 +181,7 @@ class Candidacy(Page):
         incumbent = [p for p in player.group.get_players() if p.is_incumbent][0]
         return {
             'incumbent_is_partner': (player.is_connected and incumbent.is_connected),
-            'vote_weight': C.VOTE_WEIGHT  # Dynamic parameter
+            'vote_weight': C.VOTE_WEIGHT
         }
 
     @staticmethod
@@ -216,7 +218,7 @@ class Voting(Page):
                 candidates_list.append({'id': p.id_in_group, 'label': label})
         return {
             'candidates': candidates_list,
-            'vote_weight': C.VOTE_WEIGHT  # Dynamic parameter
+            'vote_weight': C.VOTE_WEIGHT
         }
 
 
@@ -241,7 +243,6 @@ class ElectionWaitPage(WaitPage):
 
 
 class Results(Page):
-    # Points to renamed file to avoid global Results.html conflict
     template_name = 'T2_coalition_tax/ElectionResults.html'
 
     @staticmethod
