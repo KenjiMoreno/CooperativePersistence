@@ -29,7 +29,6 @@ class C(BaseConstants):
 class Subsession(BaseSubsession):
     pass
 
-
 def creating_session(subsession):
     if subsession.round_number == 1:
         for group in subsession.get_groups():
